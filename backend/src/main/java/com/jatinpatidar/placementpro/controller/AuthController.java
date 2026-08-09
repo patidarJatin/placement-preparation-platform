@@ -4,9 +4,11 @@ package com.jatinpatidar.placementpro.controller;
 import com.jatinpatidar.placementpro.dto.auth.request.ForgotPasswordRequest;
 import com.jatinpatidar.placementpro.dto.auth.request.LoginRequest;
 import com.jatinpatidar.placementpro.dto.auth.request.RegisterRequest;
+import com.jatinpatidar.placementpro.dto.auth.request.ResetPasswordRequest;
 import com.jatinpatidar.placementpro.dto.auth.response.ForgotPasswordResponse;
 import com.jatinpatidar.placementpro.dto.auth.response.LoginResponse;
 import com.jatinpatidar.placementpro.dto.auth.response.RegisterResponse;
+import com.jatinpatidar.placementpro.dto.auth.response.ResetPasswordResponse;
 import com.jatinpatidar.placementpro.service.auth.AuthService;
 import com.jatinpatidar.placementpro.service.passwordReset.PasswordResetService;
 import com.jatinpatidar.placementpro.service.user.UserService;
@@ -54,5 +56,15 @@ public class AuthController {
     @GetMapping("/google/login")
     public void googleLogin(HttpServletResponse response) throws IOException {
         response.sendRedirect("/oauth2/authorization/google");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request) {
+
+        ResetPasswordResponse response =
+                passwordResetService.resetPassword(request);
+
+        return ResponseEntity.ok(response);
     }
 }

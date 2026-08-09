@@ -123,5 +123,6 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         passwordResetTokenRepository.delete(passwordResetToken);
 
         return new ResetPasswordResponse("Password reset successfully");
+
     }
 }

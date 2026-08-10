@@ -1,11 +1,10 @@
 package com.jatinpatidar.placementpro.controller;
 
+import com.jatinpatidar.placementpro.dto.profile.request.ProfileUpdateRequest;
 import com.jatinpatidar.placementpro.dto.profile.response.UserProfileResponse;
 import com.jatinpatidar.placementpro.service.user.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -20,5 +19,11 @@ public class ProfileController {
     public ResponseEntity<UserProfileResponse> getProfile(){
         UserProfileResponse userProfileResponse = userService.getCurrentUserProfile();
         return ResponseEntity.ok(userProfileResponse);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfileResponse> updateProfile(@RequestBody ProfileUpdateRequest request){
+        UserProfileResponse response = userService.updateProfile(request);
+        return ResponseEntity.ok(response);
     }
 }

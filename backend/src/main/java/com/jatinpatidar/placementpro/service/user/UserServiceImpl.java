@@ -2,6 +2,7 @@ package com.jatinpatidar.placementpro.service.user;
 
 import com.jatinpatidar.placementpro.dto.auth.request.RegisterRequest;
 import com.jatinpatidar.placementpro.dto.auth.response.RegisterResponse;
+import com.jatinpatidar.placementpro.dto.profile.request.ProfileUpdateRequest;
 import com.jatinpatidar.placementpro.dto.profile.response.UserProfileResponse;
 import com.jatinpatidar.placementpro.entity.User;
 import com.jatinpatidar.placementpro.enums.AuthProvider;
@@ -54,13 +55,24 @@ public class UserServiceImpl implements UserService {
     public UserProfileResponse getCurrentUserProfile(){
        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
        User user = (User) authentication.getPrincipal();
-       user.getId();
-       user.getFullName();
-
        UserProfileResponse userProfileResponse = new UserProfileResponse(
                user.getId(), user.getFullName()
        );
        return userProfileResponse;
+    }
+
+    @Override
+    public UserProfileResponse updateProfile(ProfileUpdateRequest request){
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      User user = (User) authentication.getPrincipal();
+      user.setFullName(request.getFullName());
+      userRepository.save(user);
+
+      UserProfileResponse userProfileResponse  = new UserProfileResponse(
+              user.getId(), user.getFullName()
+      );
+
+      return userProfileResponse;
     }
 
 }

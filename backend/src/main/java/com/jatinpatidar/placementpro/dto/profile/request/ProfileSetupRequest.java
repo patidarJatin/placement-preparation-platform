@@ -1,18 +1,21 @@
 package com.jatinpatidar.placementpro.dto.profile.request;
 
+
+import com.jatinpatidar.placementpro.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileUpdateRequest {
-    private String fullName;
+public class ProfileSetupRequest {
+
     private LocalDate dob;
     private String mobileNumber;
     private String currentCourse;
@@ -21,4 +24,5 @@ public class ProfileUpdateRequest {
     private Float cgpa;
     private String resumeUrl;
     private String targetCompanies;
+
 }

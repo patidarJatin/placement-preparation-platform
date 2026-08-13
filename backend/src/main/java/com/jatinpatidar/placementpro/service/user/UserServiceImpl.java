@@ -51,28 +51,4 @@ public class UserServiceImpl implements UserService {
         return registerResponse;
     }
 
-    @Override
-    public UserProfileResponse getCurrentUserProfile(){
-       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       User user = (User) authentication.getPrincipal();
-       UserProfileResponse userProfileResponse = new UserProfileResponse(
-               user.getId(), user.getFullName()
-       );
-       return userProfileResponse;
-    }
-
-    @Override
-    public UserProfileResponse updateProfile(ProfileUpdateRequest request){
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      User user = (User) authentication.getPrincipal();
-      user.setFullName(request.getFullName());
-      userRepository.save(user);
-
-      UserProfileResponse userProfileResponse  = new UserProfileResponse(
-              user.getId(), user.getFullName()
-      );
-
-      return userProfileResponse;
-    }
-
 }

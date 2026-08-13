@@ -26,6 +26,4 @@ public class UserProfileResponse {
         private String resumeUrl;
         private String targetCompanies;
 
-        private Boolean profileCompleted;
-
 }

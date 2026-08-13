@@ -37,9 +37,12 @@ public class UserProfile {
     private String resumeUrl;
 
     private String targetCompanies;
-    private Boolean profileCompleted;
+    private LocalDateTime profileUpdatedAt;
 
-    private LocalDateTime profileCompletedAt;
+    @PreUpdate
+    public void onUpdate() {
+        profileUpdatedAt = LocalDateTime.now();
+    }
 
 
 }

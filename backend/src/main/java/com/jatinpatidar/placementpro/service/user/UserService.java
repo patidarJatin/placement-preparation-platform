@@ -7,6 +7,4 @@ import com.jatinpatidar.placementpro.dto.profile.response.UserProfileResponse;
 
 public interface UserService {
     RegisterResponse registerUser(RegisterRequest request);
-    UserProfileResponse getCurrentUserProfile();
-    UserProfileResponse updateProfile(ProfileUpdateRequest request);
 }

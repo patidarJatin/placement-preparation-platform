@@ -1,29 +1,30 @@
 package com.jatinpatidar.placementpro.controller;
 
+import com.jatinpatidar.placementpro.dto.profile.request.ProfileSetupRequest;
 import com.jatinpatidar.placementpro.dto.profile.request.ProfileUpdateRequest;
 import com.jatinpatidar.placementpro.dto.profile.response.UserProfileResponse;
 import com.jatinpatidar.placementpro.service.user.UserService;
+import com.jatinpatidar.placementpro.service.userProfile.UserProfileService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class ProfileController {
-    private final UserService userService;
+    private final UserProfileService userProfileService;
 
-    public ProfileController(UserService userService) {
-        this.userService = userService;
+    public ProfileController(UserProfileService userProfileService) {
+        this.userProfileService = userProfileService;
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponse> getProfile(){
-        UserProfileResponse userProfileResponse = userService.getCurrentUserProfile();
-        return ResponseEntity.ok(userProfileResponse);
-    }
+    @PostMapping("/profile")
+    public ResponseEntity<UserProfileResponse> setupProfile(
+            @RequestBody ProfileSetupRequest request) {
 
-    @PutMapping("/profile")
-    public ResponseEntity<UserProfileResponse> updateProfile(@RequestBody ProfileUpdateRequest request){
-        UserProfileResponse response = userService.updateProfile(request);
-        return ResponseEntity.ok(response);
+        UserProfileResponse response =
+                userProfileService.setupProfile(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

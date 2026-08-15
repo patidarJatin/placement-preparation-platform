@@ -27,4 +27,13 @@ public class ProfileController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponse> getupProfile() {
+
+        UserProfileResponse response =
+                userProfileService.getProfile();
+
+        return ResponseEntity.ok(response);
+    }
 }

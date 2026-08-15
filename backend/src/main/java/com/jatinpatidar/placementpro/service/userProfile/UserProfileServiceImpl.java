@@ -7,6 +7,7 @@ import com.jatinpatidar.placementpro.entity.User;
 import com.jatinpatidar.placementpro.entity.UserProfile;
 import com.jatinpatidar.placementpro.exceptions.EmailAlreadyExistsException;
 import com.jatinpatidar.placementpro.exceptions.ProfileAlreadyExistsException;
+import com.jatinpatidar.placementpro.exceptions.ProfileNotFoundException;
 import com.jatinpatidar.placementpro.repository.UserProfileRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserProfileServiceImpl implements UserProfileService{
+public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     public UserProfileServiceImpl(UserProfileRepository userProfileRepository) {
@@ -23,14 +24,14 @@ public class UserProfileServiceImpl implements UserProfileService{
     }
 
     @Override
-    public UserProfileResponse setupProfile(ProfileSetupRequest request){
+    public UserProfileResponse setupProfile(ProfileSetupRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user = (User) authentication.getPrincipal();
         Optional<UserProfile> existingProfile =
                 userProfileRepository.findByUser(user);
 
-        if(existingProfile.isPresent()){
+        if (existingProfile.isPresent()) {
             throw new ProfileAlreadyExistsException("Profile already exists");
         }
 
@@ -48,20 +49,31 @@ public class UserProfileServiceImpl implements UserProfileService{
 
         UserProfile savedProfile = userProfileRepository.save(userProfile);
 
-        UserProfileResponse response = new UserProfileResponse(savedProfile.getId(), user.getFullName(),user.getEmail(),
+        UserProfileResponse response = new UserProfileResponse(savedProfile.getId(), user.getFullName(), user.getEmail(),
                 savedProfile.getDob(), savedProfile.getMobileNumber(), savedProfile.getCurrentCourse(), savedProfile.getCurrentYear(), savedProfile.getGraduationYear(), savedProfile.getCgpa(), savedProfile.getResumeUrl(), savedProfile.getTargetCompanies());
 
         return response;
     }
 
     @Override
-    public UserProfileResponse getProfile(){
+    public UserProfileResponse getProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    return null;
+        User user = (User) authentication.getPrincipal();
+        Optional<UserProfile> userProfile =
+                userProfileRepository.findByUser(user);
+        if (userProfile.isEmpty()) {
+            throw new ProfileNotFoundException("Profile not found");
+        }
+        UserProfile profile = userProfile.get();
+        UserProfileResponse response = new UserProfileResponse(profile.getId(), user.getFullName(), user.getEmail(),
+                profile.getDob(), profile.getMobileNumber(), profile.getCurrentCourse(), profile.getCurrentYear(), profile.getGraduationYear(), profile.getCgpa(), profile.getResumeUrl(), profile.getTargetCompanies());
+
+        return response;
     }
 
     @Override
-    public UserProfileResponse updateProfile(ProfileUpdateRequest request){
-  return null;
+    public UserProfileResponse updateProfile(ProfileUpdateRequest request) {
+        return null;
     }
 }

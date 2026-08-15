@@ -5,6 +5,7 @@ import com.jatinpatidar.placementpro.dto.profile.request.ProfileUpdateRequest;
 import com.jatinpatidar.placementpro.dto.profile.response.UserProfileResponse;
 import com.jatinpatidar.placementpro.service.user.UserService;
 import com.jatinpatidar.placementpro.service.userProfile.UserProfileService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +20,9 @@ public class ProfileController {
     }
 
     @PostMapping("/profile")
-    public ResponseEntity<UserProfileResponse> setupProfile(
-            @RequestBody ProfileSetupRequest request) {
+    public ResponseEntity<UserProfileResponse> setupProfile(@RequestBody ProfileSetupRequest request) {
 
-        UserProfileResponse response =
-                userProfileService.setupProfile(request);
+        UserProfileResponse response = userProfileService.setupProfile(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -31,8 +30,15 @@ public class ProfileController {
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponse> getupProfile() {
 
-        UserProfileResponse response =
-                userProfileService.getProfile();
+        UserProfileResponse response = userProfileService.getProfile();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfileResponse> updateProfile(@RequestBody ProfileUpdateRequest request) {
+
+        UserProfileResponse response = userProfileService.updateProfile(request);
 
         return ResponseEntity.ok(response);
     }

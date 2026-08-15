@@ -9,6 +9,7 @@ import com.jatinpatidar.placementpro.exceptions.EmailAlreadyExistsException;
 import com.jatinpatidar.placementpro.exceptions.ProfileAlreadyExistsException;
 import com.jatinpatidar.placementpro.exceptions.ProfileNotFoundException;
 import com.jatinpatidar.placementpro.repository.UserProfileRepository;
+import com.jatinpatidar.placementpro.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.Optional;
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
+    private final UserRepository userRepository;
 
-    public UserProfileServiceImpl(UserProfileRepository userProfileRepository) {
+    public UserProfileServiceImpl(UserProfileRepository userProfileRepository, UserRepository userRepository) {
         this.userProfileRepository = userProfileRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -74,6 +77,34 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfileResponse updateProfile(ProfileUpdateRequest request) {
-        return null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+        Optional<UserProfile> userProfile =
+                userProfileRepository.findByUser(user);
+
+        if(userProfile.isEmpty()){
+            throw new ProfileNotFoundException("Profile not found");
+        }
+        UserProfile profile = userProfile.get();
+
+        user.setFullName(request.getFullName());
+        profile.setDob(request.getDob());
+        profile.setMobileNumber(request.getMobileNumber());
+        profile.setCurrentCourse(request.getCurrentCourse());
+        profile.setCurrentYear(request.getCurrentYear());
+        profile.setGraduationYear(request.getGraduationYear());
+        profile.setCgpa(request.getCgpa());
+        profile.setResumeUrl(request.getResumeUrl());
+        profile.setTargetCompanies(request.getTargetCompanies());
+
+
+        userRepository.save(user);
+        UserProfile savedProfile = userProfileRepository.save(profile);
+
+        UserProfileResponse response = new UserProfileResponse(savedProfile.getId(), user.getFullName(), user.getEmail(),
+                savedProfile.getDob(), savedProfile.getMobileNumber(), savedProfile.getCurrentCourse(), savedProfile.getCurrentYear(), savedProfile.getGraduationYear(), savedProfile.getCgpa(), savedProfile.getResumeUrl(), savedProfile.getTargetCompanies());
+
+        return response;
     }
 }

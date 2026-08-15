@@ -1,8 +1,8 @@
-# PlacementPro AI Platform
+# PlacementPro – Placement Preparation Platform
 
 ## Overview
 
-PlacementPro AI Platform is a full-stack web application that helps students prepare for placements by providing study materials, quizzes, company-specific preparation, and AI-powered guidance.
+PlacementPro Platform is a full-stack web application that helps students prepare for placements by providing study materials, quizzes, company-specific preparation.
 
 ---
 
@@ -13,7 +13,6 @@ PlacementPro AI Platform is a full-stack web application that helps students pre
 - Placement Materials
 - Online Quizzes
 - Progress Tracking
-- AI Career Assistant
 - Company-wise Preparation
 
 ---
@@ -71,8 +70,6 @@ Project documentation is available in the `docs/` folder.
 - JWT Authentication
 - Email Verification
 - File Upload
-- AI Resume Analyzer
-- AI Interview Preparation
 - Admin Analytics
 
 ---

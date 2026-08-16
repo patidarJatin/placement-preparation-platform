@@ -26,11 +26,15 @@ public class UserProfileServiceImpl implements UserProfileService {
         this.userRepository = userRepository;
     }
 
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        return user;
+    }
+
     @Override
     public UserProfileResponse setupProfile(ProfileSetupRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+        User user = getCurrentUser();
         Optional<UserProfile> existingProfile =
                 userProfileRepository.findByUser(user);
 
@@ -52,34 +56,24 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         UserProfile savedProfile = userProfileRepository.save(userProfile);
 
-        UserProfileResponse response = new UserProfileResponse(savedProfile.getId(), user.getFullName(), user.getEmail(),
-                savedProfile.getDob(), savedProfile.getMobileNumber(), savedProfile.getCurrentCourse(), savedProfile.getCurrentYear(), savedProfile.getGraduationYear(), savedProfile.getCgpa(), savedProfile.getResumeUrl(), savedProfile.getTargetCompanies());
-
-        return response;
+        return toResponse(user, savedProfile);
     }
 
     @Override
     public UserProfileResponse getProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+        User user = getCurrentUser();
         Optional<UserProfile> userProfile =
                 userProfileRepository.findByUser(user);
         if (userProfile.isEmpty()) {
             throw new ProfileNotFoundException("Profile not found");
         }
         UserProfile profile = userProfile.get();
-        UserProfileResponse response = new UserProfileResponse(profile.getId(), user.getFullName(), user.getEmail(),
-                profile.getDob(), profile.getMobileNumber(), profile.getCurrentCourse(), profile.getCurrentYear(), profile.getGraduationYear(), profile.getCgpa(), profile.getResumeUrl(), profile.getTargetCompanies());
-
-        return response;
+        return toResponse(user, profile);
     }
 
     @Override
     public UserProfileResponse updateProfile(ProfileUpdateRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+        User user = getCurrentUser();
         Optional<UserProfile> userProfile =
                 userProfileRepository.findByUser(user);
 
@@ -102,9 +96,21 @@ public class UserProfileServiceImpl implements UserProfileService {
         userRepository.save(user);
         UserProfile savedProfile = userProfileRepository.save(profile);
 
-        UserProfileResponse response = new UserProfileResponse(savedProfile.getId(), user.getFullName(), user.getEmail(),
-                savedProfile.getDob(), savedProfile.getMobileNumber(), savedProfile.getCurrentCourse(), savedProfile.getCurrentYear(), savedProfile.getGraduationYear(), savedProfile.getCgpa(), savedProfile.getResumeUrl(), savedProfile.getTargetCompanies());
-
-        return response;
+        return toResponse(user, savedProfile);
+    }
+    private UserProfileResponse toResponse(User user, UserProfile profile) {
+        return new UserProfileResponse(
+                profile.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                profile.getDob(),
+                profile.getMobileNumber(),
+                profile.getCurrentCourse(),
+                profile.getCurrentYear(),
+                profile.getGraduationYear(),
+                profile.getCgpa(),
+                profile.getResumeUrl(),
+                profile.getTargetCompanies()
+        );
     }
 }

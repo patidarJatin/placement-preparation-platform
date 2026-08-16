@@ -13,21 +13,30 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            String message,
+            HttpStatus status,
+            HttpServletRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(status)
+                .body(errorResponse);
+    }
+
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(
             EmailAlreadyExistsException exception, HttpServletRequest request
     ) {
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.CONFLICT.value(),
-                HttpStatus.CONFLICT.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(errorResponse);
+        return buildErrorResponse(exception.getMessage(),HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -39,48 +48,21 @@ public class GlobalExceptionHandler {
                 .get(0)
                 .getDefaultMessage();
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                message,
-                request.getRequestURI()
-        );
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorResponse);
+        return buildErrorResponse(message,HttpStatus.BAD_REQUEST,request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(
             Exception exception, HttpServletRequest request
     ) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorResponse);
+      return buildErrorResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR,request);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(
             InvalidCredentialsException exception ,HttpServletRequest request
     ){
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(errorResponse);
+       return buildErrorResponse(exception.getMessage(), HttpStatus.UNAUTHORIZED, request);
     }
 
     @ExceptionHandler(InvalidTokenException.class)
@@ -88,18 +70,7 @@ public class GlobalExceptionHandler {
             InvalidTokenException exception,
             HttpServletRequest request
     ) {
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(errorResponse);
+        return buildErrorResponse(exception.getMessage(), HttpStatus.UNAUTHORIZED,request);
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
@@ -108,17 +79,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorResponse);
+        return buildErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST,request);
     }
 
     @ExceptionHandler(ProfileAlreadyExistsException.class)
@@ -126,16 +87,7 @@ public class GlobalExceptionHandler {
             ProfileAlreadyExistsException exception, HttpServletRequest request
     ) {
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.CONFLICT.value(),
-                HttpStatus.CONFLICT.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(errorResponse);
+        return buildErrorResponse(exception.getMessage(), HttpStatus.CONFLICT,request);
     }
 
     @ExceptionHandler(ProfileNotFoundException.class)
@@ -143,15 +95,6 @@ public class GlobalExceptionHandler {
             ProfileNotFoundException exception, HttpServletRequest request
     ) {
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                exception.getMessage(),
-                request.getRequestURI()
-        );
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorResponse);
+        return buildErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND,request);
     }
 }

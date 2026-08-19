@@ -20,9 +20,14 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String companyName;
+
+    @Column(nullable = false, unique = true)
     private String slug;
+
     private String logoUrl;
+
     private String websiteUrl;
     private String description;
     private LocalDateTime lastUpdated;

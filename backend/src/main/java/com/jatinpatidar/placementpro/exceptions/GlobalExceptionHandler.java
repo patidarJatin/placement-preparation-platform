@@ -97,4 +97,11 @@ public class GlobalExceptionHandler {
 
         return buildErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND,request);
     }
+
+    @ExceptionHandler(CompanyAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleCompanyAlreadyExistsException(
+            CompanyAlreadyExistsException exception,HttpServletRequest request
+    ){
+        return buildErrorResponse(exception.getMessage(), HttpStatus.CONFLICT,request);
+    }
 }

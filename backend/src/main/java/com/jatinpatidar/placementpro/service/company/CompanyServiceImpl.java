@@ -7,6 +7,7 @@ import com.jatinpatidar.placementpro.exceptions.CompanyAlreadyExistsException;
 import com.jatinpatidar.placementpro.repository.CompanyRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,9 +50,26 @@ public class CompanyServiceImpl implements CompanyService{
         return response;
     }
 
-//    @Override
-//    List<CompanyResponse> getAllCompanies(){
-//       List<Company> companies = companyRepository.findAll();
-//
-//    }
+    @Override
+    public List<CompanyResponse> getAllCompanies(){
+       List<Company> companies = companyRepository.findAll();
+
+       List<CompanyResponse> responses = new ArrayList<>();
+
+       for(Company company :companies){
+           CompanyResponse response = new CompanyResponse(
+           company.getId(),
+           company.getCompanyName(),
+           company.getSlug(),
+           company.getLogoUrl(),
+           company.getWebsiteUrl(),
+           company.getDescription(),
+           company.getLastUpdated()
+           );
+           responses.add(response);
+       }
+    return responses;
+    }
+
+
 }
